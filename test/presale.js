@@ -588,11 +588,12 @@ contract('PreSale', function(accounts) {
   //
   it("Integration test during invest time", function() {
     var meta;
-    var gasNeeds = 115000;
+    var gasNeeds = 140000;
     var startDate = Math.floor(Date.now()/1000) - 2*24*60*60;
     var invested1 = parseInt(web3.toWei(15, 'ether'));
     var invested2 = parseInt(web3.toWei(40, 'ether'));
     var invested3 = parseInt(web3.toWei(165, 'ether'));
+    var invested4 = parseInt(web3.toWei(385, 'ether'));
     var walletBalance;
     return PreSale.deployed().then(function(instance) {
       meta = instance;
@@ -621,7 +622,11 @@ contract('PreSale', function(accounts) {
     }).then(function() {
       return web3.eth.getBalance(accounts[2]);
     }).then(function(balance) {
-      return assert.equal(walletBalance + invested1, balance, "wrong investor balance");
+      console.log("Wallet old balance: " + walletBalance);
+      console.log("Ivested: " + invested1);
+      console.log("Wallet current balance: " + balance);
+      console.log("Wallet current balance should be: " + (walletBalance + invested1));
+      return assert.equal(walletBalance + invested1, balance, "wrong wallet balance");
     // 2
     }).then(function() {
       return web3.eth.sendTransaction({ from: accounts[4], to: meta.address, value: invested2, gas: gasNeeds });
@@ -646,16 +651,6 @@ contract('PreSale', function(accounts) {
     }).then(function(balance) {
       return assert.equal(walletBalance + invested1 + invested2, balance, "wrong wallet balance after second investor");
     // 3
-    // needs gas?
-    /*}).then(function() {
-      var moreEther = parseInt(web3.toWei(0.5, 'ether'));
-      return web3.eth.sendTransaction({ from: accounts[0], to: accounts[5], value: moreEther});
-    }).then(function() {
-      var moreEther = parseInt(web3.toWei(0.5, 'ether'));
-      return web3.eth.sendTransaction({ from: accounts[1], to: accounts[5], value: moreEther});
-    }).then(function() {
-      var moreEther = parseInt(web3.toWei(0.5, 'ether'));
-      return web3.eth.sendTransaction({ from: accounts[3], to: accounts[5], value: moreEther});*/
     }).then(function() {
       return web3.eth.sendTransaction({ from: accounts[5], to: meta.address, value: invested3, gas: gasNeeds });
     }).then(function() {
@@ -678,10 +673,37 @@ contract('PreSale', function(accounts) {
       return web3.eth.getBalance(accounts[2]);
     }).then(function(balance) {
       return assert.equal(walletBalance + invested1 + invested2 + invested3, balance, "wrong wallet balance after thrid investor");
+    // 3x2
+    }).then(function() {
+      return web3.eth.sendTransaction({ from: accounts[5], to: meta.address, value: invested4, gas: gasNeeds });
+    }).then(function() {
+      return meta.total.call();
+    }).then(function(total) {
+      return assert.equal(invested1 + invested2 + invested3 + invested4, total, "wrong total field after trid twice invest");
+    }).then(function() {
+      return meta.totalInvestors.call();
+    }).then(function(totalInvestors) {
+      return assert.equal(3, totalInvestors, "wrong investors count after twice invest - should be 3");
+    }).then(function() {
+      return meta.balanceOf.call(accounts[5]);
+    }).then(function(balance) {
+      return assert.equal(invested3 + invested4, balance, "wrong thrid investor balance afte twice invest");
+    }).then(function() {
+      return web3.eth.getBalance(accounts[2]);
+    }).then(function(balance) {
+
+      console.log("====================================================================");
+      var invested = invested1 + invested2 + invested3 + invested4;
+      console.log("Wallet old balance: " + walletBalance);
+      console.log("Ivested: " + invested);
+      console.log("Wallet current balance: " + balance);
+      console.log("Wallet current balance should be: " + (walletBalance + invested));
+
+
+      return assert.equal(walletBalance + invested1 + invested2 + invested3 + invested4, balance, "wrong wallet balance after thrid twice invest");
     });
 
   });
 
-  // twice invested test
 
 });

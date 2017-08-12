@@ -1,5 +1,19 @@
-rinkeby:
+CUSTOMER PROJECT 1: ICO CONTRACT
 
+contains
+========
+1. PreSale contract
+2. ICO contract
+
+requirements
+============
+1. for testing
+  - testrpc
+  - truffle
+
+Tests
+=====
+rinkeby:
 gas to deploy: 500 000
 
 
