@@ -135,6 +135,8 @@ contract PreSale is Pausable {
   uint16 public period;
 
   mapping (address => uint) balances;
+
+  mapping (address => bool) invested;
   
   address[] public investors;
   
@@ -167,7 +169,11 @@ contract PreSale is Pausable {
   function invest() saleIsOn whenNotPaused payable {
     wallet.transfer(msg.value);
     balances[msg.sender] = balances[msg.sender].add(msg.value);
-    investors.push(msg.sender);
+    bool isInvested = invested[msg.sender];
+    if(!isInvested) {
+        investors.push(msg.sender);    
+        invested[msg.sender] = true;
+    }
     total = total.add(msg.value);
     Invest(msg.sender, msg.value);
   }
