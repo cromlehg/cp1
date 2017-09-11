@@ -2,7 +2,7 @@ pragma solidity ^0.4.2;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
-import "../contracts/PreSale.sol";
+import "../contracts/Crowdsale.sol";
 
 contract TestPreSale {
 

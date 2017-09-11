@@ -1,4 +1,4 @@
-var PreSale = artifacts.require("./PreSale.sol");
+var PreSale = artifacts.require("./Crowdsale.sol");
 
 contract('PreSale', function(accounts) {
  
