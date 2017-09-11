@@ -51,7 +51,7 @@ contract('Crowdsale', function(accounts) {
       }
     });
   });
-/*
+
   it("first owner: should not change start date", function() {
     var meta;
     var newStart = 1502463457;
@@ -1897,7 +1897,7 @@ contract('Crowdsale', function(accounts) {
       assert.equal(balance.toString(), invested8FDC.toString(), "after transfer: 5 investor balance wrong!");
     });
 
-  });*/
+  });
 
   // try finish minting for not owner!!!
 });
