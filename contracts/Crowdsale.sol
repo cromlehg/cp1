@@ -323,7 +323,7 @@ contract StagedCrowdsale is Pausable {
     totalPeriod = totalPeriod.add(period);
   }
 
-  function removeMilestones(uint8 number) onlyOwner {
+  function removeMilestone(uint8 number) onlyOwner {
     require(number < milestones.length);
     Milestone storage milestone = milestones[number];
     totalPeriod = totalPeriod.sub(milestone.period);

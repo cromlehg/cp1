@@ -8,29 +8,24 @@ contract('Crowdsale', function(accounts) {
 
 
   var newPeriod1 = 7;
-  var newHardcap1 = 850000000000000000000;
-  var newPrice1 = 1700000000000000;
+  var newBonus1 = 60;
 
   var newPeriod2 = 7;
-  var newHardcap2 = 2550000000000000000000;
-  var newPrice2 = 2550000000000000;
+  var newBonus2 = 50;
 
   var newPeriod3 = 7;
-  var newHardcap3 = 8160000000000000000000;
-  var newPrice3 = 2720000000000000;
+  var newBonus3 = 0;
 
   var newPeriod4 = 21;
-  var newHardcap4 = 49300000000000000000000;
-  var newPrice4 = 3400000000000000;
+  var newBonus4 = 35;
 
   var newPeriod5 = 41;
-  var newHardcap5 = 59300000000000000000000;
-  var newPrice5 = 7400000000000000;
+  var newBonus5 = 24;
 
   var newPeriod5c = 413;
-  var newHardcap5c = 59300000000000000000012;
-  var newPrice5c = 7400000000009999;
+  var newBonus5c = 0;
 
+  var newPrice = 1000000;
 
   it("first owner: should not change ownership", function() {
     var meta;
@@ -231,18 +226,18 @@ contract('Crowdsale', function(accounts) {
 
   it("first owner: should not change founders percent", function() {
     var meta;
-    var newFoundersPercent = 30;
+    var newFoundersTokensPercent = 30;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.setFoundersPercent(newFoundersPercent, {from: accounts[1]});
+      return meta.setFoundersTokensPercent(newFoundersTokensPercent, {from: accounts[1]});
     }).then(function() {
-      return meta.foundersPercent.call();
-    }).then(function(foundersPercent) {
-      assert.notEqual(newFoundersPercent, foundersPercent, "changed");
+      return meta.foundersTokensPercent.call();
+    }).then(function(foundersTokensPercent) {
+      assert.notEqual(newFoundersTokensPercent, foundersTokensPercent, "changed");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.foundersPercent.call().then(function(foundersPercent) {
-          assert.notEqual(newFoundersPercent, foundersPercent, "changed");
+        return meta.foundersTokensPercent.call().then(function(foundersTokensPercent) {
+          assert.notEqual(newFoundersTokensPercent, foundersTokensPercent, "changed");
         });
       } else {
         throw e;
@@ -252,18 +247,18 @@ contract('Crowdsale', function(accounts) {
 
   it("first owner: should not change bounty percent", function() {
     var meta;
-    var newBountyPercent = 30;
+    var newBountyTokensPercent = 30;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.setBountyPercent(newBountyPercent, {from: accounts[1]});
+      return meta.setBountyTokensPercent(newBountyTokensPercent, {from: accounts[1]});
     }).then(function() {
-      return meta.bountyPercent.call();
-    }).then(function(bountyPercent) {
-      assert.notEqual(newBountyPercent, bountyPercent, "changed");
+      return meta.bountyTokensPercent.call();
+    }).then(function(bountyTokensPercent) {
+      assert.notEqual(newBountyTokensPercent, bountyTokensPercent, "changed");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.bountyPercent.call().then(function(bountyPercent) {
-          assert.notEqual(newBountyPercent, bountyPercent, "changed");
+        return meta.bountyTokensPercent.call().then(function(bountyTokensPercent) {
+          assert.notEqual(newBountyTokensPercent, bountyTokensPercent, "changed");
         });
       } else {
         throw e;
@@ -275,15 +270,15 @@ contract('Crowdsale', function(accounts) {
     var meta;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.addStage(1, 12, 10, {from: accounts[1]});
+      return meta.addMilestone(1, 10, {from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.notEqual(0, stagesCount, "changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.notEqual(0, milestonesCount, "changed");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.stagesCount().then(function(stagesCount) {
-          assert.equal(0, stagesCount, "changed");
+        return meta.milestonesCount().then(function(milestonesCount) {
+          assert.equal(0, milestonesCount, "changed");
         });
       } else {
         throw e;
@@ -295,28 +290,21 @@ contract('Crowdsale', function(accounts) {
   it("first owner: should add stage 1", function() {
     var meta;
     var newPeriod = newPeriod1;
-    var newHardcap = newHardcap1;
-    var newPrice = newPrice1;
+    var newBonus = newBonus1;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.addStage(newPeriod, newHardcap, newPrice, {from: accounts[0]});
+      return meta.addMilestone(newPeriod, newBonus, {from: accounts[0]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(1, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(1, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod, "stage period wrong");
-      assert.equal(stages[1], newHardcap, "stage hardcap wrong");
-      assert.equal(stages[2], newPrice, "stage price wrong");
-      assert.equal(stages[3], 0, "stage invested wrong");
-      assert.equal(stages[4], 0, "stage closed wrong");
+      assert.equal(stages[1], newBonus, "stage bonus wrong");
     });
   });
 
@@ -324,15 +312,15 @@ contract('Crowdsale', function(accounts) {
     var meta;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.removeStage(0, {from: accounts[1]});
+      return meta.removeMilestone(0, {from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.notEqual(1, stagesCount, "changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.notEqual(1, milestonesCount, "changed");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.stagesCount().then(function(stagesCount) {
-          assert.equal(1, stagesCount, "changed");
+        return meta.milestonesCount().then(function(milestonesCount) {
+          assert.equal(1, milestonesCount, "changed");
         });
       } else {
         throw e;
@@ -344,27 +332,20 @@ contract('Crowdsale', function(accounts) {
   it("first owner: should not change stage", function() {
     var meta;
     var newPeriod = newPeriod5c;
-    var newHardcap = newHardcap5c;
-    var newPrice = newPrice5c;
+    var newBonus = newBonus5c;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.changeStage(0, newPeriod, newHardcap, newPrice, {from: accounts[1]});
+      return meta.changeMilestone(0, newPeriod, newBonus, {from: accounts[1]});
     }).then(function() {
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.stages(0).then(function(stages) {
+        return meta.milestones(0).then(function(stages) {
          assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-         assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-         assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-         assert.equal(stages[3], 0, "stage 1 invested wrong");
-         assert.equal(stages[4], 0, "stage 1 closed wrong");
+         assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
      });
       } else {
         throw e;
@@ -375,96 +356,73 @@ contract('Crowdsale', function(accounts) {
   it("first owner: should add stage 2", function() {
     var meta;
     var newPeriod = newPeriod2;
-    var newHardcap = newHardcap2;
-    var newPrice = newPrice2;
+    var newBonus = newBonus2;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.addStage(newPeriod, newHardcap, newPrice, {from: accounts[0]});
+      return meta.addMilestone(newPeriod, newBonus, {from: accounts[0]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(2, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(2, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod1 + newPeriod2, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
     });
   });
 
   it("first owner: should add stage 4", function() {
     var meta;
     var newPeriod = newPeriod4;
-    var newHardcap = newHardcap4;
-    var newPrice = newPrice4;
+    var newBonus = newBonus4;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.addStage(newPeriod, newHardcap, newPrice, {from: accounts[0]});
+      return meta.addMilestone(newPeriod, newBonus, {from: accounts[0]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(3, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(3, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod1 + newPeriod2 + newPeriod4, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2 + newHardcap4, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
-      return meta.stages(2);
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
+      return meta.milestones(2);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod4, "stage 4 period wrong");
-      assert.equal(stages[1], newHardcap4, "stage 4 hardcap wrong");
-      assert.equal(stages[2], newPrice4, "stage 4 price wrong");
-      assert.equal(stages[3], 0, "stage 4 invested wrong");
-      assert.equal(stages[4], 0, "stage 4 closed wrong");
+      assert.equal(stages[1], newBonus4, "stage 4 bonus wrong");
     });
   });
 
+  // FIXME: check insert stage params
   it("first owner: should not insert stage", function() {
     var meta;
     var newPeriod = newPeriod3;
-    var newHardcap = newHardcap3;
-    var newPrice = newPrice3;
+    var newBonus = newBonus3;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.insertStage(1, newPeriod, newHardcap, newPrice, {from: accounts[1]});
+      return meta.insertMilestone(1, newPeriod, newBonus, {from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.notEqual(3, stagesCount, "changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.notEqual(3, milestonesCount, "changed");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.stagesCount().then(function(stagesCount) {
-          assert.equal(3, stagesCount, "changed");
+        return meta.milestonesCount().then(function(milestonesCount) {
+          assert.equal(3, milestonesCount, "changed");
         });
       } else {
         throw e;
@@ -476,210 +434,140 @@ contract('Crowdsale', function(accounts) {
   it("first owner: should insert stage 3", function() {
     var meta;
     var newPeriod = newPeriod3;
-    var newHardcap = newHardcap3;
-    var newPrice = newPrice3;
+    var newBonus = newBonus3;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.insertStage(1, newPeriod, newHardcap, newPrice, {from: accounts[0]});
+      return meta.insertMilestone(1, newPeriod, newBonus, {from: accounts[0]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(4, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(4, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod1 + newPeriod2 + newPeriod3 + newPeriod4, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2 + newHardcap3 + newHardcap4, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
-      return meta.stages(2);
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
+      return meta.milestones(2);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod3, "stage 3 period wrong");
-      assert.equal(stages[1], newHardcap3, "stage 3 hardcap wrong");
-      assert.equal(stages[2], newPrice3, "stage 3 price wrong");
-      assert.equal(stages[3], 0, "stage 3 invested wrong");
-      assert.equal(stages[4], 0, "stage 3 closed wrong");
-      return meta.stages(3);
+      assert.equal(stages[1], newBonus3, "stage 3 bonus wrong");
+      return meta.milestones(3);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod4, "stage 4 period wrong");
-      assert.equal(stages[1], newHardcap4, "stage 4 hardcap wrong");
-      assert.equal(stages[2], newPrice4, "stage 4 price wrong");
-      assert.equal(stages[3], 0, "stage 4 invested wrong");
-      assert.equal(stages[4], 0, "stage 4 closed wrong");
+      assert.equal(stages[1], newBonus4, "stage 4 bonus wrong");
     });
   });
 
   it("first owner: should insert stage 5 in not right place", function() {
     var meta;
     var newPeriod = newPeriod5;
-    var newHardcap = newHardcap5;
-    var newPrice = newPrice5;
+    var newBonus = newBonus5;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.insertStage(2, newPeriod, newHardcap, newPrice, {from: accounts[0]});
+      return meta.insertMilestone(2, newPeriod, newBonus, {from: accounts[0]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(5, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(5, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod1 + newPeriod2 + newPeriod3 + newPeriod4 + newPeriod5, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2 + newHardcap3 + newHardcap4 + newHardcap5, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
-      return meta.stages(2);
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
+      return meta.milestones(2);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod3, "stage 3 period wrong");
-      assert.equal(stages[1], newHardcap3, "stage 3 hardcap wrong");
-      assert.equal(stages[2], newPrice3, "stage 3 price wrong");
-      assert.equal(stages[3], 0, "stage 3 invested wrong");
-      assert.equal(stages[4], 0, "stage 3 closed wrong");
-      return meta.stages(3);
+      assert.equal(stages[1], newBonus3, "stage 3 bonus wrong");
+      return meta.milestones(3);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod5, "stage 5 period wrong");
-      assert.equal(stages[1], newHardcap5, "stage 5 hardcap wrong");
-      assert.equal(stages[2], newPrice5, "stage 5 price wrong");
-      assert.equal(stages[3], 0, "stage 5 invested wrong");
-      assert.equal(stages[4], 0, "stage 5 closed wrong");
-      return meta.stages(4);
+      assert.equal(stages[1], newBonus5, "stage 5 bonus wrong");
+      return meta.milestones(4);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod4, "stage 4 period wrong");
-      assert.equal(stages[1], newHardcap4, "stage 4 hardcap wrong");
-      assert.equal(stages[2], newPrice4, "stage 4 price wrong");
-      assert.equal(stages[3], 0, "stage 4 invested wrong");
-      assert.equal(stages[4], 0, "stage 4 closed wrong");
+      assert.equal(stages[1], newBonus4, "stage 4 bonus wrong");
     });
   });
 
   it("first owner: should changes stage 5 in not right place", function() {
     var meta;
     var newPeriod = newPeriod5c;
-    var newHardcap = newHardcap5c;
-    var newPrice = newPrice5c;
+    var newBonus = newBonus5c;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.changeStage(3, newPeriod, newHardcap, newPrice, {from: accounts[0]});
+      return meta.changeMilestone(3, newPeriod, newBonus, {from: accounts[0]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(5, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(5, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod1 + newPeriod2 + newPeriod3 + newPeriod4 + newPeriod5c, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2 + newHardcap3 + newHardcap4 + newHardcap5c, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
-      return meta.stages(2);
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
+      return meta.milestones(2);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod3, "stage 3 period wrong");
-      assert.equal(stages[1], newHardcap3, "stage 3 hardcap wrong");
-      assert.equal(stages[2], newPrice3, "stage 3 price wrong");
-      assert.equal(stages[3], 0, "stage 3 invested wrong");
-      assert.equal(stages[4], 0, "stage 3 closed wrong");
-      return meta.stages(3);
+      assert.equal(stages[1], newBonus3, "stage 3 bonus wrong");
+      return meta.milestones(3);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod5c, "stage 5c period wrong");
-      assert.equal(stages[1], newHardcap5c, "stage 5c hardcap wrong");
-      assert.equal(stages[2], newPrice5c, "stage 5c price wrong");
-      assert.equal(stages[3], 0, "stage 5c invested wrong");
-      assert.equal(stages[4], 0, "stage 5c closed wrong");
-      return meta.stages(4);
+      assert.equal(stages[1], newBonus5c, "stage 5c bonus wrong");
+      return meta.milestones(4);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod4, "stage 4 period wrong");
-      assert.equal(stages[1], newHardcap4, "stage 4 hardcap wrong");
-      assert.equal(stages[2], newPrice4, "stage 4 price wrong");
-      assert.equal(stages[3], 0, "stage 4 invested wrong");
-      assert.equal(stages[4], 0, "stage 4 closed wrong");
+      assert.equal(stages[1], newBonus4, "stage 4 hardcap wrong");
     });
   });
 
   it("first owner: remove stage 5 from not right place", function() {
     var meta;
     var newPeriod = newPeriod5;
-    var newHardcap = newHardcap5;
-    var newPrice = newPrice5;
+    var newBonus = newBonus5;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.removeStage(3, {from: accounts[0]});
+      return meta.removeMilestone(3, {from: accounts[0]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(4, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(4, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod1 + newPeriod2 + newPeriod3 + newPeriod4, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2 + newHardcap3 + newHardcap4, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
-      return meta.stages(2);
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
+      return meta.milestones(2);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod3, "stage 3 period wrong");
-      assert.equal(stages[1], newHardcap3, "stage 3 hardcap wrong");
-      assert.equal(stages[2], newPrice3, "stage 3 price wrong");
-      assert.equal(stages[3], 0, "stage 3 invested wrong");
-      assert.equal(stages[4], 0, "stage 3 closed wrong");
-      return meta.stages(3);
+      assert.equal(stages[1], newBonus3, "stage 3 bonus wrong");
+      return meta.milestones(3);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod4, "stage 4 period wrong");
-      assert.equal(stages[1], newHardcap4, "stage 4 hardcap wrong");
-      assert.equal(stages[2], newPrice4, "stage 4 price wrong");
-      assert.equal(stages[3], 0, "stage 4 invested wrong");
-      assert.equal(stages[4], 0, "stage 4 closed wrong");
+      assert.equal(stages[1], newBonus4, "stage 4 bonus wrong");
     });
   });
 
@@ -688,15 +576,15 @@ contract('Crowdsale', function(accounts) {
     var meta;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.clearStages({from: accounts[1]});
+      return meta.clearMilestones({from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.notEqual(4, stagesCount, "changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.notEqual(4, milestonesCount, "changed");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.stagesCount().then(function(stagesCount) {
-          assert.equal(4, stagesCount, "changed");
+        return meta.milestonesCount().then(function(milestonesCount) {
+          assert.equal(4, milestonesCount, "changed");
         });
       } else {
         throw e;
@@ -708,17 +596,14 @@ contract('Crowdsale', function(accounts) {
     var meta;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.clearStages({from: accounts[0]});
+      return meta.clearMilestones({from: accounts[0]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(0, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(0, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(0, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(0, totalHardCap, "total hardcap not changed");
     });
   });
 
@@ -935,18 +820,18 @@ contract('Crowdsale', function(accounts) {
 
   it("second owner: should not change founders percent", function() {
     var meta;
-    var newFoundersPercent = 30;
+    var newFoundersTokensPercent = 30;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.setFoundersPercent(newFoundersPercent, {from: accounts[0]});
+      return meta.setFoundersTokensPercent(newFoundersTokensPercent, {from: accounts[0]});
     }).then(function() {
-      return meta.foundersPercent.call();
-    }).then(function(foundersPercent) {
-      assert.notEqual(newFoundersPercent, foundersPercent, "changed");
+      return meta.foundersTokensPercent.call();
+    }).then(function(foundersTokensPercent) {
+      assert.notEqual(newFoundersTokensPercent, foundersTokensPercent, "changed");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.foundersPercent.call().then(function(foundersPercent) {
-          assert.notEqual(newFoundersPercent, foundersPercent, "changed");
+        return meta.foundersTokensPercent.call().then(function(foundersTokensPercent) {
+          assert.notEqual(newFoundersTokensPercent, foundersTokensPercent, "changed");
         });
       } else {
         throw e;
@@ -956,18 +841,18 @@ contract('Crowdsale', function(accounts) {
 
   it("second owner: should not change bounty percent", function() {
     var meta;
-    var newBountyPercent = 30;
+    var newBountyTokensPercent = 30;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.setBountyPercent(newBountyPercent, {from: accounts[0]});
+      return meta.setBountyTokensPercent(newBountyTokensPercent, {from: accounts[0]});
     }).then(function() {
-      return meta.bountyPercent.call();
-    }).then(function(bountyPercent) {
-      assert.notEqual(newBountyPercent, bountyPercent, "changed");
+      return meta.bountyTokensPercent.call();
+    }).then(function(bountyTokensPercent) {
+      assert.notEqual(newBountyTokensPercent, bountyTokensPercent, "changed");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.bountyPercent.call().then(function(bountyPercent) {
-          assert.notEqual(newBountyPercent, bountyPercent, "changed");
+        return meta.bountyTokensPercent.call().then(function(bountyTokensPercent) {
+          assert.notEqual(newBountyTokensPercent, bountyTokensPercent, "changed");
         });
       } else {
         throw e;
@@ -979,15 +864,15 @@ contract('Crowdsale', function(accounts) {
     var meta;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.addStage(1, 12, 10, {from: accounts[0]});
+      return meta.addMilestone(1, 12, {from: accounts[0]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.notEqual(0, stagesCount, "changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.notEqual(0, milestonesCount, "changed");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.stagesCount().then(function(stagesCount) {
-          assert.equal(0, stagesCount, "changed");
+        return meta.milestonesCount().then(function(milestonesCount) {
+          assert.equal(0, milestonesCount, "changed");
         });
       } else {
         throw e;
@@ -999,28 +884,21 @@ contract('Crowdsale', function(accounts) {
   it("second owner: should add stage 1", function() {
     var meta;
     var newPeriod = newPeriod1;
-    var newHardcap = newHardcap1;
-    var newPrice = newPrice1;
+    var newBonus = newBonus1;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.addStage(newPeriod, newHardcap, newPrice, {from: accounts[1]});
+      return meta.addMilestone(newPeriod, newBonus, {from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(1, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(1, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod, "stage period wrong");
-      assert.equal(stages[1], newHardcap, "stage hardcap wrong");
-      assert.equal(stages[2], newPrice, "stage price wrong");
-      assert.equal(stages[3], 0, "stage invested wrong");
-      assert.equal(stages[4], 0, "stage closed wrong");
+      assert.equal(stages[1], newBonus, "stage bonus wrong");
     });
   });
 
@@ -1028,15 +906,15 @@ contract('Crowdsale', function(accounts) {
     var meta;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.removeStage(0, {from: accounts[0]});
+      return meta.removeMilestone(0, {from: accounts[0]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.notEqual(1, stagesCount, "changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.notEqual(1, milestonesCount, "changed");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.stagesCount().then(function(stagesCount) {
-          assert.equal(1, stagesCount, "changed");
+        return meta.milestonesCount().then(function(milestonesCount) {
+          assert.equal(1, milestonesCount, "changed");
         });
       } else {
         throw e;
@@ -1048,27 +926,20 @@ contract('Crowdsale', function(accounts) {
   it("second owner: should not change stage", function() {
     var meta;
     var newPeriod = newPeriod5c;
-    var newHardcap = newHardcap5c;
-    var newPrice = newPrice5c;
+    var newBonus = newBonus5c;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.changeStage(0, newPeriod, newHardcap, newPrice, {from: accounts[0]});
+      return meta.changeMilestone(0, newPeriod, newBonus, {from: accounts[0]});
     }).then(function() {
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.stages(0).then(function(stages) {
+        return meta.milestones(0).then(function(stages) {
          assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-         assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-         assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-         assert.equal(stages[3], 0, "stage 1 invested wrong");
-         assert.equal(stages[4], 0, "stage 1 closed wrong");
+         assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
      });
       } else {
         throw e;
@@ -1079,96 +950,72 @@ contract('Crowdsale', function(accounts) {
   it("second owner: should add stage 2", function() {
     var meta;
     var newPeriod = newPeriod2;
-    var newHardcap = newHardcap2;
-    var newPrice = newPrice2;
+    var newBonus = newBonus2;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.addStage(newPeriod, newHardcap, newPrice, {from: accounts[1]});
+      return meta.addMilestone(newPeriod, newBonus, {from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(2, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(2, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod1 + newPeriod2, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
     });
   });
 
   it("second owner: should add stage 4", function() {
     var meta;
     var newPeriod = newPeriod4;
-    var newHardcap = newHardcap4;
-    var newPrice = newPrice4;
+    var newBonus = newBonus4;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.addStage(newPeriod, newHardcap, newPrice, {from: accounts[1]});
+      return meta.addMilestone(newPeriod, newBonus, {from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(3, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(3, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod1 + newPeriod2 + newPeriod4, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2 + newHardcap4, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
-      return meta.stages(2);
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
+      return meta.milestones(2);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod4, "stage 4 period wrong");
-      assert.equal(stages[1], newHardcap4, "stage 4 hardcap wrong");
-      assert.equal(stages[2], newPrice4, "stage 4 price wrong");
-      assert.equal(stages[3], 0, "stage 4 invested wrong");
-      assert.equal(stages[4], 0, "stage 4 closed wrong");
+      assert.equal(stages[1], newBonus4, "stage 4 bonus wrong");
     });
   });
 
   it("second owner: should not insert stage", function() {
     var meta;
     var newPeriod = newPeriod3;
-    var newHardcap = newHardcap3;
-    var newPrice = newPrice3;
+    var newBonus = newBonus3;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.insertStage(1, newPeriod, newHardcap, newPrice, {from: accounts[0]});
+      return meta.insertMilestone(1, newPeriod, newBonus, {from: accounts[0]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.notEqual(3, stagesCount, "changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.notEqual(3, milestonesCount, "changed");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.stagesCount().then(function(stagesCount) {
-          assert.equal(3, stagesCount, "changed");
+        return meta.milestonesCount().then(function(milestonesCount) {
+          assert.equal(3, milestonesCount, "changed");
         });
       } else {
         throw e;
@@ -1180,210 +1027,140 @@ contract('Crowdsale', function(accounts) {
   it("second owner: should insert stage 3", function() {
     var meta;
     var newPeriod = newPeriod3;
-    var newHardcap = newHardcap3;
-    var newPrice = newPrice3;
+    var newBonus = newBonus3;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.insertStage(1, newPeriod, newHardcap, newPrice, {from: accounts[1]});
+      return meta.insertMilestone(1, newPeriod, newBonus, {from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(4, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(4, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod1 + newPeriod2 + newPeriod3 + newPeriod4, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2 + newHardcap3 + newHardcap4, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
-      return meta.stages(2);
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
+      return meta.milestones(2);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod3, "stage 3 period wrong");
-      assert.equal(stages[1], newHardcap3, "stage 3 hardcap wrong");
-      assert.equal(stages[2], newPrice3, "stage 3 price wrong");
-      assert.equal(stages[3], 0, "stage 3 invested wrong");
-      assert.equal(stages[4], 0, "stage 3 closed wrong");
-      return meta.stages(3);
+      assert.equal(stages[1], newBonus3, "stage 3 bonus wrong");
+      return meta.milestones(3);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod4, "stage 4 period wrong");
-      assert.equal(stages[1], newHardcap4, "stage 4 hardcap wrong");
-      assert.equal(stages[2], newPrice4, "stage 4 price wrong");
-      assert.equal(stages[3], 0, "stage 4 invested wrong");
-      assert.equal(stages[4], 0, "stage 4 closed wrong");
+      assert.equal(stages[1], newBonus4, "stage 4 bonus wrong");
     });
   });
 
   it("second owner: should insert stage 5 in not right place", function() {
     var meta;
     var newPeriod = newPeriod5;
-    var newHardcap = newHardcap5;
-    var newPrice = newPrice5;
+    var newBonus = newBonus5;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.insertStage(2, newPeriod, newHardcap, newPrice, {from: accounts[1]});
+      return meta.insertMilestone(2, newPeriod, newBonus, {from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(5, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(5, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod1 + newPeriod2 + newPeriod3 + newPeriod4 + newPeriod5, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2 + newHardcap3 + newHardcap4 + newHardcap5, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
-      return meta.stages(2);
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
+      return meta.milestones(2);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod3, "stage 3 period wrong");
-      assert.equal(stages[1], newHardcap3, "stage 3 hardcap wrong");
-      assert.equal(stages[2], newPrice3, "stage 3 price wrong");
-      assert.equal(stages[3], 0, "stage 3 invested wrong");
-      assert.equal(stages[4], 0, "stage 3 closed wrong");
-      return meta.stages(3);
+      assert.equal(stages[1], newBonus3, "stage 3 bonus wrong");
+      return meta.milestones(3);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod5, "stage 5 period wrong");
-      assert.equal(stages[1], newHardcap5, "stage 5 hardcap wrong");
-      assert.equal(stages[2], newPrice5, "stage 5 price wrong");
-      assert.equal(stages[3], 0, "stage 5 invested wrong");
-      assert.equal(stages[4], 0, "stage 5 closed wrong");
-      return meta.stages(4);
+      assert.equal(stages[1], newBonus5, "stage 5 bonus wrong");
+      return meta.milestones(4);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod4, "stage 4 period wrong");
-      assert.equal(stages[1], newHardcap4, "stage 4 hardcap wrong");
-      assert.equal(stages[2], newPrice4, "stage 4 price wrong");
-      assert.equal(stages[3], 0, "stage 4 invested wrong");
-      assert.equal(stages[4], 0, "stage 4 closed wrong");
+      assert.equal(stages[1], newBonus4, "stage 4 bonus wrong");
     });
   });
 
   it("second owner: should changes stage 5 in not right place", function() {
     var meta;
     var newPeriod = newPeriod5c;
-    var newHardcap = newHardcap5c;
-    var newPrice = newPrice5c;
+    var newBonus = newBonus5c;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.changeStage(3, newPeriod, newHardcap, newPrice, {from: accounts[1]});
+      return meta.changeMilestone(3, newPeriod, newBonus, {from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(5, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(5, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod1 + newPeriod2 + newPeriod3 + newPeriod4 + newPeriod5c, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2 + newHardcap3 + newHardcap4 + newHardcap5c, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
-      return meta.stages(2);
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
+      return meta.milestones(2);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod3, "stage 3 period wrong");
-      assert.equal(stages[1], newHardcap3, "stage 3 hardcap wrong");
-      assert.equal(stages[2], newPrice3, "stage 3 price wrong");
-      assert.equal(stages[3], 0, "stage 3 invested wrong");
-      assert.equal(stages[4], 0, "stage 3 closed wrong");
-      return meta.stages(3);
+      assert.equal(stages[1], newBonus3, "stage 3 bonus wrong");
+      return meta.milestones(3);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod5c, "stage 5c period wrong");
-      assert.equal(stages[1], newHardcap5c, "stage 5c hardcap wrong");
-      assert.equal(stages[2], newPrice5c, "stage 5c price wrong");
-      assert.equal(stages[3], 0, "stage 5c invested wrong");
-      assert.equal(stages[4], 0, "stage 5c closed wrong");
-      return meta.stages(4);
+      assert.equal(stages[1], newBonus5c, "stage 5c bonus wrong");
+      return meta.milestones(4);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod4, "stage 4 period wrong");
-      assert.equal(stages[1], newHardcap4, "stage 4 hardcap wrong");
-      assert.equal(stages[2], newPrice4, "stage 4 price wrong");
-      assert.equal(stages[3], 0, "stage 4 invested wrong");
-      assert.equal(stages[4], 0, "stage 4 closed wrong");
+      assert.equal(stages[1], newBonus4, "stage 4 bonus wrong");
     });
   });
 
   it("second owner: remove stage 5 from not right place", function() {
     var meta;
     var newPeriod = newPeriod5;
-    var newHardcap = newHardcap5;
-    var newPrice = newPrice5;
+    var newBonus = newBonus5;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.removeStage(3, {from: accounts[1]});
+      return meta.removeMilestone(3, {from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(4, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(4, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(newPeriod1 + newPeriod2 + newPeriod3 + newPeriod4, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2 + newHardcap3 + newHardcap4, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
-      return meta.stages(2);
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
+      return meta.milestones(2);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod3, "stage 3 period wrong");
-      assert.equal(stages[1], newHardcap3, "stage 3 hardcap wrong");
-      assert.equal(stages[2], newPrice3, "stage 3 price wrong");
-      assert.equal(stages[3], 0, "stage 3 invested wrong");
-      assert.equal(stages[4], 0, "stage 3 closed wrong");
-      return meta.stages(3);
+      assert.equal(stages[1], newBonus3, "stage 3 bonus wrong");
+      return meta.milestones(3);
     }).then(function(stages) {
       assert.equal(stages[0], newPeriod4, "stage 4 period wrong");
-      assert.equal(stages[1], newHardcap4, "stage 4 hardcap wrong");
-      assert.equal(stages[2], newPrice4, "stage 4 price wrong");
-      assert.equal(stages[3], 0, "stage 4 invested wrong");
-      assert.equal(stages[4], 0, "stage 4 closed wrong");
+      assert.equal(stages[1], newBonus4, "stage 4 bonus wrong");
     });
   });
 
@@ -1392,15 +1169,15 @@ contract('Crowdsale', function(accounts) {
     var meta;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.clearStages({from: accounts[0]});
+      return meta.clearMilestones({from: accounts[0]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.notEqual(4, stagesCount, "changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.notEqual(4, milestonesCount, "changed");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.stagesCount().then(function(stagesCount) {
-          assert.equal(4, stagesCount, "changed");
+        return meta.milestonesCount().then(function(milestonesCount) {
+          assert.equal(4, milestonesCount, "changed");
         });
       } else {
         throw e;
@@ -1412,17 +1189,14 @@ contract('Crowdsale', function(accounts) {
     var meta;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.clearStages({from: accounts[1]});
+      return meta.clearMilestones({from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(0, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(0, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(0, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(0, totalHardCap, "total hardcap not changed");
     });
   });
 
@@ -1511,24 +1285,24 @@ contract('Crowdsale', function(accounts) {
     var newFoudnersPercent = 45;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.setFoundersPercent(newFoudnersPercent, {from: accounts[1]});
+      return meta.setFoundersTokensPercent(newFoudnersPercent, {from: accounts[1]});
     }).then(function() {
-      return meta.foundersPercent.call();
-    }).then(function(foundersPercent) {
-      assert.equal(newFoudnersPercent, foundersPercent, "not changed");
+      return meta.foundersTokensPercent.call();
+    }).then(function(foundersTokensPercent) {
+      assert.equal(newFoudnersPercent, foundersTokensPercent, "not changed");
     });
   });
 
   it("ICO 1: should set bounty percent", function() {
     var meta;
-    var newBountyPercent = 5;
+    var newBountyTokensPercent = 5;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.setBountyPercent(newBountyPercent, {from: accounts[1]});
+      return meta.setBountyTokensPercent(newBountyTokensPercent, {from: accounts[1]});
     }).then(function() {
-      return meta.bountyPercent.call();
-    }).then(function(bountyPercent) {
-      assert.equal(newBountyPercent, bountyPercent, "not changed");
+      return meta.bountyTokensPercent.call();
+    }).then(function(bountyTokensPercent) {
+      assert.equal(newBountyTokensPercent, bountyTokensPercent, "not changed");
     });
   });
 
@@ -1536,10 +1310,10 @@ contract('Crowdsale', function(accounts) {
   // setup miniICO model:
   // stages
   //
-  // 1) addStage(1,   850 000000000000000000, 1700000000000000);
-  // 2) addStage(1,  2550 000000000000000000, 2550000000000000);
-  // 3) addStage(1,  8160 000000000000000000, 2720000000000000);
-  // 4) addStage(1, 49300 000000000000000000, 3400000000000000);
+  // 1) addMilestone(1,   850 000000000000000000, 1700000000000000);
+  // 2) addMilestone(1,  2550 000000000000000000, 2550000000000000);
+  // 3) addMilestone(1,  8160 000000000000000000, 2720000000000000);
+  // 4) addMilestone(1, 49300 000000000000000000, 3400000000000000);
   // 
   //
 
@@ -1553,51 +1327,36 @@ contract('Crowdsale', function(accounts) {
     var meta;
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
-      return meta.addStage(modelPeriod1, newHardcap1, newPrice1, {from: accounts[1]});
+      return meta.addMilestone(modelPeriod1, newBonus1, {from: accounts[1]});
     }).then(function() {
-      return meta.addStage(modelPeriod2, newHardcap2, newPrice2, {from: accounts[1]});
+      return meta.addMilestone(modelPeriod2, newBonus2, {from: accounts[1]});
     }).then(function() {
-      return meta.addStage(modelPeriod3, newHardcap3, newPrice3, {from: accounts[1]});
+      return meta.addMilestone(modelPeriod3, newBonus3, {from: accounts[1]});
     }).then(function() {
-      return meta.addStage(modelPeriod4, newHardcap4, newPrice4, {from: accounts[1]});
+      return meta.addMilestone(modelPeriod4, newBonus4, {from: accounts[1]});
     }).then(function() {
-      return meta.stagesCount();
-    }).then(function(stagesCount) {
-      assert.equal(4, stagesCount, "stages count not changed");
+      return meta.milestonesCount();
+    }).then(function(milestonesCount) {
+      assert.equal(4, milestonesCount, "stages count not changed");
       return meta.totalPeriod.call();
     }).then(function(totalPeriod) {
       assert.equal(modelPeriod1 + modelPeriod2 + modelPeriod3 + modelPeriod4, totalPeriod, "total period not changed");
-      return meta.totalHardCap.call();
-    }).then(function(totalHardCap) {
-      assert.equal(newHardcap1 + newHardcap2 + newHardcap3 + newHardcap4, totalHardCap, "total hardcap not changed");
-      return meta.stages(0);
+      return meta.milestones(0);
     }).then(function(stages) {
       assert.equal(stages[0], modelPeriod1, "stage 1 period wrong");
-      assert.equal(stages[1], newHardcap1, "stage 1 hardcap wrong");
-      assert.equal(stages[2], newPrice1, "stage 1 price wrong");
-      assert.equal(stages[3], 0, "stage 1 invested wrong");
-      assert.equal(stages[4], 0, "stage 1 closed wrong");
-      return meta.stages(1);
+      assert.equal(stages[1], newBonus1, "stage 1 bonus wrong");
+      return meta.milestones(1);
     }).then(function(stages) {
       assert.equal(stages[0], modelPeriod2, "stage 2 period wrong");
-      assert.equal(stages[1], newHardcap2, "stage 2 hardcap wrong");
-      assert.equal(stages[2], newPrice2, "stage 2 price wrong");
-      assert.equal(stages[3], 0, "stage 2 invested wrong");
-      assert.equal(stages[4], 0, "stage 2 closed wrong");
-      return meta.stages(2);
+      assert.equal(stages[1], newBonus2, "stage 2 bonus wrong");
+      return meta.milestones(2);
     }).then(function(stages) {
       assert.equal(stages[0], modelPeriod3, "stage 3 period wrong");
-      assert.equal(stages[1], newHardcap3, "stage 3 hardcap wrong");
-      assert.equal(stages[2], newPrice3, "stage 3 price wrong");
-      assert.equal(stages[3], 0, "stage 3 invested wrong");
-      assert.equal(stages[4], 0, "stage 3 closed wrong");
-      return meta.stages(3);
+      assert.equal(stages[1], newBonus3, "stage 3 bonus wrong");
+      return meta.milestones(3);
     }).then(function(stages) {
       assert.equal(stages[0], modelPeriod4, "stage 4 period wrong");
-      assert.equal(stages[1], newHardcap4, "stage 4 hardcap wrong");
-      assert.equal(stages[2], newPrice4, "stage 4 price wrong");
-      assert.equal(stages[3], 0, "stage 4 invested wrong");
-      assert.equal(stages[4], 0, "stage 4 closed wrong");
+      assert.equal(stages[1], newBonus4, "stage 4 bonus wrong");
     });
   });
 
@@ -1614,12 +1373,12 @@ contract('Crowdsale', function(accounts) {
       assert.equal(startDate, start, "invest date not changed");
       return web3.eth.sendTransaction({ from: accounts[4], to: meta.address, value: invested, gas: 180000 })
     }).then(function() {
-      return meta.totalInvested.call();
+      return meta.invested.call();
     }).then(function(totalInvested) {
       assert.equal(0, totalInvested, "invested");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.totalInvested.call().then(function(totalInvested) {
+        return meta.invested.call().then(function(totalInvested) {
           assert.equal(0, totalInvested, "invested");
         });
       } else {
@@ -1641,12 +1400,12 @@ contract('Crowdsale', function(accounts) {
       assert.equal(startDate, start, "invest date not changed");
       return web3.eth.sendTransaction({ from: accounts[4], to: meta.address, value: invested, gas: 180000 })
     }).then(function() {
-      return meta.totalInvested.call();
+      return meta.invested.call();
     }).then(function(totalInvested) {
       assert.equal(0, totalInvested, "invested");
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
-        return meta.totalInvested.call().then(function(totalInvested) {
+        return meta.invested.call().then(function(totalInvested) {
           assert.equal(0, totalInvested, "invested");
         });
       } else {
@@ -1685,15 +1444,15 @@ contract('Crowdsale', function(accounts) {
     var investedAfter_1_2_3_4_5_in_Wgei = new BigNumber(web3.toWei(investedAfter_1_2_3_4_5_in_Ether, 'ether'));
 
     var lastDate = startDate + (modelPeriod1 + modelPeriod2 + modelPeriod3 + modelPeriod4)*24*60*60;
-    var firstInvestorTokensFDC = investedInWei.dividedToIntegerBy(new BigNumber(newPrice1));
+    var firstInvestorTokensFDC = investedInWei.dividedToIntegerBy(new BigNumber(newPrice));
     var firstInvestorTokensFDCInWei = firstInvestorTokensFDC.mul(etherMul);
-    var investedPass1StageTokensFDC = investedPass1StageInWei.dividedToIntegerBy(new BigNumber(newPrice1));
+    var investedPass1StageTokensFDC = investedPass1StageInWei.dividedToIntegerBy(new BigNumber(newPrice));
     var investedPass1StageTokensFDCInWei = investedPass1StageTokensFDC.mul(etherMul);
-    var investedPass2StageTokensFDC = investedPass2StageInWei.dividedToIntegerBy(new BigNumber(newPrice2));
+    var investedPass2StageTokensFDC = investedPass2StageInWei.dividedToIntegerBy(new BigNumber(newPrice));
     var investedPass2StageTokensFDCInWei = investedPass2StageTokensFDC.mul(etherMul);
-    var investedPass3StageTokensFDC = investedPass3StageInWei.dividedToIntegerBy(new BigNumber(newPrice3));
+    var investedPass3StageTokensFDC = investedPass3StageInWei.dividedToIntegerBy(new BigNumber(newPrice));
     var investedPass3StageTokensFDCInWei = investedPass3StageTokensFDC.mul(etherMul);
-    var investedPass4StageTokensFDC = investedPass4StageInWei.dividedToIntegerBy(new BigNumber(newPrice4));
+    var investedPass4StageTokensFDC = investedPass4StageInWei.dividedToIntegerBy(new BigNumber(newPrice));
     var investedPass4StageTokensFDCInWei = investedPass4StageTokensFDC.mul(etherMul);
     var lastDateAfterSecondInvestor;
     var lastDateAfterThridInvestor;
@@ -1703,43 +1462,59 @@ contract('Crowdsale', function(accounts) {
     var mBalanceFoundersFDC;
     var mBalanceBountyFDC;
     var mBalanceInvestorsFDC;
-    //var hardcap = newHardcap1 + newHardcap2 + newHardcap3 + newHardcap4;
+
+    console.log("1");
     return Crowdsale.deployed().then(function(instance) {
       meta = instance;
       return meta.setStart(startDate, {from: accounts[1]});
+    }).then(function() {
+      var hardcap = 100000000000000000000;
+      return meta.setHardcap(hardcap, { from: accounts[1], gas: 180000 })
     }).then(function() {
       return meta.token.call();
     }).then(function(token) {
       metaToken = INCToken.at(token);
       return meta.start.call();
     }).then(function(start) {
+
+      console.log("2");
       assert.equal(startDate, start, "invest date not changed");
       return meta.lastSaleDate.call();
     }).then(function(lastSaleDate) {
+
+      console.log("2.1");
       assert.equal(lastDate, lastSaleDate, "invest last sale date");
-      return meta.currentStage.call();
+      return meta.currentMilestone.call();
     }).then(function(stageIndex) {
+      console.log("2.2");
       assert.equal(0, stageIndex, "current stage wrong");
       return web3.eth.sendTransaction({ from: accounts[4], to: meta.address, value: investedInWei, gas: 180000 })
     }).then(function() {
-      return meta.totalInvested.call();
+      console.log("2.3");
+      return meta.invested.call();
     }).then(function(totalInvested) {
+      console.log("2.4");
       assert.equal(investedInWei.toString(), totalInvested.toString(), "not invested");
       return metaToken.totalSupply.call();
     }).then(function(totalSupply) {
+      console.log("2.5");
       var parsedInvested = web3.toWei(totalSupply, 'ether');
       assert.equal(firstInvestorTokensFDCInWei.toString(), totalSupply.toString(), "not mint right count of tokens");
     // test to pass first stage //
+
+      console.log("2.6");
       lastDateAfterSecondInvestor = Math.floor(Date.now()/1000) + (modelPeriod2 + modelPeriod3 + modelPeriod4)*24*60*60;
       return web3.eth.sendTransaction({ from: accounts[5], to: meta.address, value: investedPass1StageInWei, gas: 180000 })
     }).then(function() {
-      return meta.totalInvested.call();
+
+      console.log("3");
+      return meta.invested.call();
     }).then(function(totalInvested) {
       assert.equal(investedInWei.add(investedPass1StageInWei).toString(), totalInvested.toString(), "not invested pass stage 1");
       return metaToken.totalSupply.call();
     }).then(function(totalSupply) {
       assert.equal(firstInvestorTokensFDCInWei.add(investedPass1StageTokensFDCInWei).toString(), totalSupply.toString(), "not mint right count of tokens  pass stage 1");
-      return meta.currentStage.call();
+      return meta.currentMilestone.call();
     }).then(function(stageIndex) {
       assert.equal(1, stageIndex, "current stage wrong after second investor");
       return meta.lastSaleDate.call();
@@ -1753,13 +1528,15 @@ contract('Crowdsale', function(accounts) {
       lastDateAfterThridInvestor = Math.floor(Date.now()/1000) + (modelPeriod3 + modelPeriod4)*24*60*60;
       return web3.eth.sendTransaction({ from: accounts[6], to: meta.address, value: investedPass2StageInWei, gas: 180000 })
     }).then(function() {
-      return meta.totalInvested.call();
+
+      console.log("4");
+      return meta.invested.call();
     }).then(function(totalInvested) {
       assert.equal(investedAfter_1_2_3_in_Wgei.toString(), totalInvested.toString(), "not invested pass stage 2");
       return metaToken.totalSupply.call();
     }).then(function(totalSupply) {
       assert.equal(firstInvestorTokensFDCInWei.add(investedPass1StageTokensFDCInWei).add(investedPass2StageTokensFDCInWei).toString(), totalSupply.toString(), "not mint right count of tokens  pass stage 2");
-      return meta.currentStage.call();
+      return meta.currentMilestone.call();
     }).then(function(stageIndex) {
       assert.equal(2, stageIndex, "current stage wrong after thrid investor");
       return meta.lastSaleDate.call();
@@ -1773,14 +1550,18 @@ contract('Crowdsale', function(accounts) {
       lastDateAfter4Investor = Math.floor(Date.now()/1000) + (modelPeriod4)*24*60*60;
       return web3.eth.sendTransaction({ from: accounts[7], to: meta.address, value: investedPass3StageInWei, gas: 180000 })
     }).then(function() {
-      return meta.totalInvested.call();
+
+      console.log("5");
+      return meta.invested.call();
     }).then(function(totalInvested) {
       assert.equal(investedAfter_1_2_3_4_in_Wgei.toString(), totalInvested.toString(), "not invested pass stage 3");
       return metaToken.totalSupply.call();
     }).then(function(totalSupply) {
       assert.equal(firstInvestorTokensFDCInWei.add(investedPass1StageTokensFDCInWei).add(investedPass2StageTokensFDCInWei).add(investedPass3StageTokensFDCInWei).toString(), totalSupply.toString(), "not mint right count of tokens  pass stage 3");
-      return meta.currentStage.call();
+      return meta.currentMilestone.call();
     }).then(function(stageIndex) {
+
+      console.log("6");
       assert.equal(3, stageIndex, "current stage wrong after 4 investor");
       return meta.lastSaleDate.call();
     }).then(function(lastSaleDate) {
@@ -1793,11 +1574,14 @@ contract('Crowdsale', function(accounts) {
       lastDateAfter5Investor = Math.floor(Date.now()/1000);
       return web3.eth.sendTransaction({ from: accounts[8], to: meta.address, value: investedPass4StageInWei, gas: 180000 })
     }).then(function() {
-      return meta.totalInvested.call();
+      console.log("7");
+      return meta.invested.call();
     }).then(function(totalInvested) {
+      console.log("8");
       assert.equal(investedAfter_1_2_3_4_5_in_Wgei.toString(), totalInvested.toString(), "not invested pass stage 4");
       return metaToken.totalSupply.call();
     }).then(function(totalSupply) {
+      console.log(totalSupply);
       mBalanceInvestorsFDC = totalSupply;
       assert.equal(firstInvestorTokensFDCInWei.add(investedPass1StageTokensFDCInWei).add(investedPass2StageTokensFDCInWei).add(investedPass3StageTokensFDCInWei).add(investedPass4StageTokensFDCInWei).toString(), totalSupply.toString(), "not mint right count of tokens  pass stage 4");
       return meta.lastSaleDate.call();
@@ -1811,6 +1595,8 @@ contract('Crowdsale', function(accounts) {
       return web3.eth.sendTransaction({ from: accounts[9], to: meta.address, value: investedPass4StageInWei, gas: 180000 })
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
+
+        console.log("9");
         catched = true;
         return true;
       } else {
@@ -1824,6 +1610,7 @@ contract('Crowdsale', function(accounts) {
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
         catched = true;
+        console.log("10");
         return true;
       } else {
         throw e;
@@ -1835,24 +1622,30 @@ contract('Crowdsale', function(accounts) {
       return meta.finishMinting({ from: accounts[0], gas: 180000 })
     }).catch(function(e) {
       if(e.toString().indexOf("invalid opcode") != -1) {
+        console.log("11");
         catched = true;
         return true;
       } else {
         throw e;
       }
     }).then(function() {
+      console.log("12");
       assert.equal(true, catched, "not catched when try to finish minting from not owner");
       // finish minting try - it should mint tokens, check balances
       return meta.finishMinting({ from: accounts[1], gas: 180000 })
     }).then(function() {
+      console.log("13");
       return metaToken.balanceOf(accounts[0]);
     }).then(function(balance) {
       mBalanceMultisigFDC = balance;
+      console.log("14");
       return metaToken.balanceOf(accounts[2]);
     }).then(function(balance) {
+      console.log("15");
       mBalanceFoundersFDC = balance;
       return metaToken.balanceOf(accounts[3]);
     }).then(function(balance) {
+      console.log("16");
       mBalanceBountyFDC = balance;
       mSummaryMintedFDCAfterICO = mBalanceMultisigFDC.add(mBalanceInvestorsFDC).add(mBalanceFoundersFDC).add(mBalanceBountyFDC);
       mBountyPercentTokens = mSummaryMintedFDCAfterICO.div(new BigNumber(1000)).mul(new BigNumber(5));
