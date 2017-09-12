@@ -552,7 +552,7 @@ contract Crowdsale is StagedCrowdsale {
     uint tokens = msg.value.mul(1 ether).div(price);
     uint bonusTokens = tokens.mul(milestone.bonus).div(percentRate);
     uint tokensWithBonus = tokens.add(bonusTokens);
-    token.mint(owner, tokensWithBonus);
+    token.mint(this, tokensWithBonus);
     token.transfer(msg.sender, tokensWithBonus);
   }
 
@@ -564,7 +564,7 @@ contract Crowdsale is StagedCrowdsale {
       uint tokens = invested.mul(1 ether).div(price);
       uint bonusTokens = tokens.mul(earlyInvestorsBonus).div(percentRate);
       uint tokensWithBonus = tokens.add(bonusTokens);
-      token.mint(owner, tokensWithBonus);
+      token.mint(this, tokensWithBonus);
       token.transfer(investorAddress, tokensWithBonus);
     }
     earlyInvestorsMintedTokens = true;
@@ -577,9 +577,9 @@ contract Crowdsale is StagedCrowdsale {
     uint totalSupply = summaryFoundersTokens + issuedTokenSupply;
     uint foundersTokens = totalSupply.mul(foundersTokensPercent).div(percentRate);
     uint bountyTokens = totalSupply.mul(bountyTokensPercent).div(percentRate);
-    token.mint(owner, foundersTokens);
+    token.mint(this, foundersTokens);
     token.transfer(foundersTokensWallet, foundersTokens);
-    token.mint(owner, bountyTokens);
+    token.mint(this, bountyTokens);
     token.transfer(bountyTokensWallet, bountyTokens);
     token.finishMinting();
     token.transferOwnership(owner);
@@ -595,4 +595,3 @@ contract Crowdsale is StagedCrowdsale {
   }
 
 }
-

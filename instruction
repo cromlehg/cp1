@@ -23,11 +23,15 @@
         setHardcap(граница сбора в wei)
 11) Установить цену токена в wei
         setPrice(цена токена в wei)
-12) Добавить этапы c помощью функции addMilestone
+12) Установить бонус ранним инвесторам
+        setEarlyInvestorsBonus(процент)
+13) Установить адрес прошедшего presale
+        setPresaleAddress(адрес)
+14) Добавить этапы c помощью функции addMilestone
         addMilestone(длительность в днях, бонсу в процентах)
-13) Для выпуска токенов ранним инвесторам вызвать до окончания ICO
+15) Для выпуска токенов ранним инвесторам вызвать до окончания ICO
         mintTokensToEralyInvestors()
-14) После окончания ICO вызвать 
+16) После окончания ICO вызвать 
         finishMinting()
 
 
@@ -47,6 +51,7 @@
 - Кошелек для собраного эфира        : 
 - Кошелек для токенов основателям    : 
 - Кошелек для токенов баунти         : 
+- Адрес presale                      : 0x94c6c46E2E9F3CFeb712A1f4d7795df5B684661a
 - Начало ICO                         : 1 октября в 16:00 по Москве или 13:00 GMT
 - Цена                               : 1 ETH = 800 INC
 - Процент токенов основателям        : 20%
@@ -66,8 +71,10 @@
         setBountyTokensWallet( )
         setFoundersTokensPercent(20)
         setBountyTokensPercent(2)
-        setHardcap( )
+        setHardcap(0x94c6c46E2E9F3CFeb712A1f4d7795df5B684661a)
         setPrice(1250000000000000)
+        setEarlyInvestorsBonus(30)
+        setPresaleAddress( )
         addMilestone( 7, 25)
         addMilestone( 7, 15)
         addMilestone( 7,  5)
@@ -79,7 +86,10 @@
 
 
 ==== Ссылки на конракты в блокчейн ====
-
+Контракт токена 
+	Ссылка  - 
+Контракт распродажи 
+	Ссылка  - 
 
 =================================================================
 =                                                               =
@@ -92,12 +102,15 @@
 - Ropsten
 - консенсус Proof of Work
 
+depoly: 2814290
+
 2) Конфигурация контракта:
-- Кошелек создателя контракта        : 0x25803D4325EbC33CCF779FF16a23d6CF9543e559
+- Кошелек создателя контракта        : 0x737D7342e8Ac4a5D4961bCc9273301Fd3E5dd696
 - Кошелек нового владельца контракта : 0xA6F5138CD040Ba04ec03c2763871402aE6cd6B45
 - Кошелек для собраного эфира        : 0x8d6dc4df99e18f07f1be6833a59c0cd48c5c1329
 - Кошелек для токенов основателям    : 0xB10c7598b9DfaB99cD646BA385560912dE95F590
 - Кошелек для токенов баунти         : 0x89E42DeDcDFE4E86222ec9C64A38F13e899Ba8Ce
+- Адрес presale                      : 0x352353924dEf8888527e5529a2Db0967A635746B
 - Начало ICO                         : 1 октября в 16:00 по Москве или 13:00 GMT
 - Цена                               : 1 ETH = 800 INC
 - Процент токенов основателям        : 20%
@@ -111,30 +124,30 @@
 -- 4) продолжительность  2 дней, бонус  0% 
 
 3) Конфигурация контракта (выполнять с кошелька с которого заливали контракт)
-        setStart(1502542800)
-        setMultisigWallet( )
-        setFoundersTokensWallet( )
-        setBountyTokensWallet( )
-        setFoundersTokensPercent(20)
-        setBountyTokensPercent(2)
-        setHardcap(15000000000000000000)
-        setPrice(1250000000000000)
-        addMilestone(7, 25)
-        addMilestone(7, 15)
-        addMilestone(7,  5)
-        addMilestone(7,  0)
-        mintTokensToEralyInvestors()
+        setStart(1502542800): 43007
+        setMultisigWallet(0x8d6dc4df99e18f07f1be6833a59c0cd48c5c1329): 43780
+        setFoundersTokensWallet(0xB10c7598b9DfaB99cD646BA385560912dE95F590): 43582
+        setBountyTokensWallet(0x89E42DeDcDFE4E86222ec9C64A38F13e899Ba8Ce): 44418
+        setFoundersTokensPercent(20): 42551
+        setBountyTokensPercent(2): 42155
+        setHardcap(15000000000000000000): 43069
+        setPrice(1250000000000000): 42695
+        setEarlyInvestorsBonus(30): 42089
+        setPresaleAddress(0x352353924dEf8888527e5529a2Db0967A635746B): 44220
+        addMilestone(1, 25): 103473
+        addMilestone(1, 15): 73473
+        addMilestone(1,  5): 73473
+        addMilestone(2,  0): 58409
+        mintTokensToEralyInvestors():  327979
 
    После окончания ICO вызвать 
         finishMinting()
 
 ==== Ссылки на конракты в блокчейн ====
-Контракт токена 0xB0aC75eFe7ed69a330909898Af3b61f1504fc2c4
-	Ссылка  - https://ropsten.etherscan.io/token/0xb0ac75efe7ed69a330909898af3b61f1504fc2c4#readContract
-Контракт preSale 0xBb306DED3971B3038226dcB31ccf1d8D7FC537A0
-	Ссылка  - https://ropsten.etherscan.io/address/0xbb306ded3971b3038226dcb31ccf1d8d7fc537a0#readContract
-Контракт main sale 0x24C8e642F2B4a159A625E356E85527A1B36F8713
-	Ссылка  - https://ropsten.etherscan.io/address/0x24c8e642f2b4a159a625e356e85527a1b36f8713#readContract
+Контракт токена 0xf931736065c9590ef20347e3d5faf12c903b5cd1
+	Ссылка  - https://ropsten.etherscan.io/token/0xf931736065c9590ef20347e3d5faf12c903b5cd1#readContract
+Контракт распродажи 0xd8f31Ff306221832cACf9F1098C178dDbfA79bD3
+	Ссылка  - https://ropsten.etherscan.io/address/0xd8f31Ff306221832cACf9F1098C178dDbfA79bD3#readContract
 
 
 
