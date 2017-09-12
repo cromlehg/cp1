@@ -530,8 +530,8 @@ contract Crowdsale is StagedCrowdsale {
     Milestone storage milestone = milestones[milestoneIndex];
     multisigWallet.transfer(msg.value);
     invested = invested.add(msg.value);
-    uint tokens = msg.value.div(price).mul(1 ether);
-    uint bonusTokens = tokens.div(percentRate).mul(milestone.bonus);
+    uint tokens = msg.value.mul(1 ether).div(price);
+    uint bonusTokens = tokens.mul(milestone.bonus).div(percentRate);
     uint tokensWithBonus = tokens.add(bonusTokens);
     token.mint(owner, tokensWithBonus);
     token.transfer(msg.sender, tokensWithBonus);
