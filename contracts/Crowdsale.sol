@@ -542,8 +542,8 @@ contract Crowdsale is StagedCrowdsale {
     for(uint i  = 0; i < presale.totalInvestors(); i++) {
       address investorAddress = presale.investors(i);
       uint invested = presale.balanceOf(investorAddress);
-      uint tokens = invested.div(price).mul(1 ether);
-      uint bonusTokens = tokens.div(percentRate).mul(earlyInvestorsBonus);
+      uint tokens = invested.mul(1 ether).div(price);
+      uint bonusTokens = tokens.mul(earlyInvestorsBonus).div(percentRate);
       uint tokensWithBonus = tokens.add(bonusTokens);
       token.mint(owner, tokensWithBonus);
       token.transfer(investorAddress, tokensWithBonus);
@@ -556,8 +556,8 @@ contract Crowdsale is StagedCrowdsale {
     uint summaryTokensPercent = bountyTokensPercent + foundersTokensPercent;
     uint summaryFoundersTokens = issuedTokenSupply.mul(summaryTokensPercent).div(percentRate - summaryTokensPercent);
     uint totalSupply = summaryFoundersTokens + issuedTokenSupply;
-    uint foundersTokens = totalSupply.div(percentRate).mul(foundersTokensPercent);
-    uint bountyTokens = totalSupply.div(percentRate).mul(bountyTokensPercent);
+    uint foundersTokens = totalSupply.mul(foundersTokensPercent).div(percentRate);
+    uint bountyTokens = totalSupply.mul(bountyTokensPercent).div(percentRate);
     token.mint(owner, foundersTokens);
     token.transfer(foundersTokensWallet, foundersTokens);
     token.mint(owner, bountyTokens);
