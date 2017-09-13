@@ -124,7 +124,7 @@ depoly: 2814290
 -- 4) продолжительность  2 дней, бонус  0% 
 
 3) Конфигурация контракта (выполнять с кошелька с которого заливали контракт)
-        setStart(1502542800): 43007
+        setStart(1505221200): 43007
         setMultisigWallet(0x8d6dc4df99e18f07f1be6833a59c0cd48c5c1329): 43780
         setFoundersTokensWallet(0xB10c7598b9DfaB99cD646BA385560912dE95F590): 43582
         setBountyTokensWallet(0x89E42DeDcDFE4E86222ec9C64A38F13e899Ba8Ce): 44418
