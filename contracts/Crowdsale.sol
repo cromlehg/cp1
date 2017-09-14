@@ -277,9 +277,9 @@ contract Pausable is Ownable {
 
 contract INCToken is MintableToken {	
     
-  string public constant name = "INC";
+  string public constant name = "Instacoin";
    
-  string public constant symbol = "Instacoin";
+  string public constant symbol = "INC";
     
   uint32 public constant decimals = 18;
 
