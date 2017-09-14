@@ -56,7 +56,7 @@
 - Цена                               : 1 ETH = 800 INC
 - Процент токенов основателям        : 20%
 - Порцент токенов на баунти          : 2%
-- Граница сбора                      : 
+- Граница сбора                      : 130 000 000 ETH
 - Бонус ранним инвесторам            : 30%
 - Этапы                              : 4 
 -- 1) продолжительность  7 дней, бонус 25%
@@ -71,10 +71,10 @@
         setBountyTokensWallet( )
         setFoundersTokensPercent(20)
         setBountyTokensPercent(2)
-        setHardcap(0x94c6c46E2E9F3CFeb712A1f4d7795df5B684661a)
+        setHardcap(130000000000000000000000000)
         setPrice(1250000000000000)
         setEarlyInvestorsBonus(30)
-        setPresaleAddress( )
+        setPresaleAddress(0x94c6c46E2E9F3CFeb712A1f4d7795df5B684661a)
         addMilestone( 7, 25)
         addMilestone( 7, 15)
         addMilestone( 7,  5)
