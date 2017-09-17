@@ -582,8 +582,8 @@ contract Crowdsale is StagedCrowdsale {
     token.mint(this, bountyTokens);
     token.transfer(bountyTokensWallet, bountyTokens);
     token.finishMinting();
-    token.transferOwnership(owner);
     token.allowTransfer();
+    token.transferOwnership(owner);
   }
 
   function() external payable {
