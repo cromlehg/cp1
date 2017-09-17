@@ -509,7 +509,7 @@ contract Crowdsale is StagedCrowdsale {
 
   bool public earlyInvestorsMintedTokens = false;
 
-  MintableToken public token = new INCToken();
+  INCToken public token = new INCToken();
 
   function setPrice(uint newPrice) onlyOwner {
     price = newPrice;
